@@ -3,7 +3,8 @@ package controllers
 import (
 	"io"
 	"net/http"
-	"github.com/chainCompete/compete-service/blockchain"
+
+	"Fabric/blockchain"
 )
 
 //Application represents that
@@ -14,14 +15,18 @@ type Application struct {
 func (app *Application) PostRegisterRequest(w http.ResponseWriter, r *http.Request) {
 	userName := r.PostFormValue("username")
 	userRole := r.PostFormValue("userrole")
-	if userName == "" || userRole == "" {
-		if userName == ""{
+	schoolid := r.PostFormValue("schoolid")
+	if userName == "" || userRole == "" || schoolid == "" {
+		if userName == "" {
 			io.WriteString(w, "username is empty!")
 		}
-		if userRole == ""{
-			io.WriteString(w, "userrole is empty!")		
+		if userRole == "" {
+			io.WriteString(w, "userrole is empty!")
 		}
-	}else {
+		if schoolid == "" {
+			io.WriteString(w, "schoolid is empty!")
+		}
+	} else {
 		success := true
 		err := app.Fabric.RegisterUser(userName)
 		if err != nil {
@@ -31,7 +36,7 @@ func (app *Application) PostRegisterRequest(w http.ResponseWriter, r *http.Reque
 		if err != nil {
 			success = false
 		}
-		_, err = app.Fabric.InvokeCreateUser(userRole)
+		_, err = app.Fabric.InvokeCreateUser(userRole, schoolid)
 		if err != nil {
 			success = false
 		}
@@ -66,73 +71,7 @@ func (app *Application) PostTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-func (app *Application) PostOffer(w http.ResponseWriter, r *http.Request) {
-
-	arrivalTime := r.PostFormValue("arrivaltime")
-	departureTime := r.PostFormValue("departuretime")
-	cost := r.PostFormValue("cost")
-	taskName := r.PostFormValue("taskname")
-	_, err := app.Fabric.InvokePostOffer(arrivalTime, departureTime, cost, taskName)
-	if err == nil {
-		io.WriteString(w, "请求成功")
-	} else {
-		io.WriteString(w, "请求失败")
-	}
-
-}
-func (app *Application) AssignTask(w http.ResponseWriter, r *http.Request) {
-	taskName := r.PostFormValue("taskname")
-	_, err := app.Fabric.InvokeAssignTask(taskName)
-	if err == nil {
-		io.WriteString(w, "分配成功")
-	} else {
-		io.WriteString(w, "分配失败")
-	}
-
-}
-func (app *Application) BonusPayment(w http.ResponseWriter, r *http.Request) {
-	taskName := r.PostFormValue("taskname")
-	isSatisfied := r.PostFormValue("issatisfied")
-	_, err := app.Fabric.InvokeBonusPayment(taskName, isSatisfied)
-	if err == nil {
-		io.WriteString(w, "支付成功")
-	} else {
-		io.WriteString(w, "支付失败")
-	}
-
-}
 func (app *Application) QueryUser(w http.ResponseWriter, r *http.Request) {
 	data, _ := app.Fabric.QueryUser()
 	io.WriteString(w, data)
 }
-func (app *Application) QueryTask(w http.ResponseWriter, r *http.Request) {
-	taskName := r.PostFormValue("taskname")
-	data, _ := app.Fabric.QueryTask(taskName)
-	io.WriteString(w, data)
-}
-func (app *Application) QueryAllTask(w http.ResponseWriter, r *http.Request) {
-	data, _ := app.Fabric.QueryAllTask()
-	io.WriteString(w, data)
-}
-func (app *Application) QueryUserTask(w http.ResponseWriter, r *http.Request) {
-	data, _ := app.Fabric.QueryUserTask()
-	io.WriteString(w, data)
-}
-func (app *Application) QueryWorkerOffer(w http.ResponseWriter, r *http.Request) {
-	data, _ := app.Fabric.QueryWorkerOffer()
-	io.WriteString(w, data)
-}
-
-func (app *Application) QueryWorkerTaskOffer(w http.ResponseWriter, r *http.Request) {
-	taskName := r.PostFormValue("taskname")
-	data, _ := app.Fabric.QueryWorkerTaskOffer(taskName)
-	io.WriteString(w, data)
-
-}
-func (app *Application) QueryAssignResult(w http.ResponseWriter, r *http.Request) {
-	taskName := r.PostFormValue("taskname")
-	data, _ := app.Fabric.QueryAssignResult(taskName)
-	io.WriteString(w, data)
-
-}
-

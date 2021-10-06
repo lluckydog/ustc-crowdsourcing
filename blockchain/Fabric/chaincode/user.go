@@ -8,9 +8,9 @@ import (
 
 //用户信息
 type User struct {
-	UserID      string `json:UserID`      //用户ID
-	UserAccount int    `json:UserAccount` //用户账号余额
-	UserRole    string `json:UserRole`    //用户身份
+	UserID   string `json:UserID`   //用户ID
+	SchoolId int    `json:SchoolId` //学校ID
+	UserRole string `json:UserRole` //用户身份
 }
 
 //IsUserExist 判断用户是否存在
@@ -19,8 +19,8 @@ func (t *Chaincode) IsUserExist(stub shim.ChaincodeStubInterface, userName strin
 	return err != nil || userJSONBytes != nil
 }
 
-//IsPoster 判断用户是否为poster
-func (t *Chaincode) IsPoster(stub shim.ChaincodeStubInterface, uname string) bool {
+//IsAdmin 判断用户是否为admin
+func (t *Chaincode) IsAdmin(stub shim.ChaincodeStubInterface, uname string) bool {
 	userJSONBytes, err := stub.GetState(uname)
 	if err != nil {
 		return false
@@ -30,21 +30,7 @@ func (t *Chaincode) IsPoster(stub shim.ChaincodeStubInterface, uname string) boo
 	if err != nil {
 		return false
 	}
-	return user.UserRole == "poster"
-}
-
-//IsWorker 判断用户是否为worker
-func (t *Chaincode) IsWorker(stub shim.ChaincodeStubInterface, uname string) bool {
-	userJSONBytes, err := stub.GetState(uname)
-	if err != nil {
-		return false
-	}
-	user := User{}
-	err = json.Unmarshal(userJSONBytes, &user)
-	if err != nil {
-		return false
-	}
-	return user.UserRole == "worker"
+	return user.UserRole == "admin"
 }
 
 //UserGetter 通过用户名返回用户信息的结构体

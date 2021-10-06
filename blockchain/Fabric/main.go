@@ -5,7 +5,7 @@ import (
 
 	"os"
 
-	"github.com/chainCompete/compete-service/blockchain"
+	"Fabric/blockchain"
 )
 
 func main() {
@@ -71,9 +71,9 @@ func main() {
 	fSetup.InvokeAssignTask("task1")
 	fSetup.InvokeAssignTask("task2")
 	fSetup.InvokeAssignTask("task3")
-	fSetup.InvokeBonusPayment("task1","0")
-	fSetup.InvokeBonusPayment("task2","0")
-	fSetup.InvokeBonusPayment("task3","0")
+	fSetup.InvokeBonusPayment("task1", "0")
+	fSetup.InvokeBonusPayment("task2", "0")
+	fSetup.InvokeBonusPayment("task3", "0")
 
 	var choose int
 	for {
@@ -105,9 +105,9 @@ func main() {
 					fmt.Println(fSetup.InvokeAssignTask(taskName))
 				} else if choose == 5 {
 					fmt.Println("InvokeBonusPayment")
-					var taskName,isSatisfied string
-					fmt.Scanln(&taskName,&isSatisfied)
-					fmt.Println(fSetup.InvokeBonusPayment(taskName,isSatisfied))
+					var taskName, isSatisfied string
+					fmt.Scanln(&taskName, &isSatisfied)
+					fmt.Println(fSetup.InvokeBonusPayment(taskName, isSatisfied))
 				} else {
 					break
 				}
@@ -166,4 +166,3 @@ func main() {
 	}
 
 }
-
